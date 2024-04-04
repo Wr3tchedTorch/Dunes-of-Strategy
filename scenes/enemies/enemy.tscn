@@ -1,0 +1,84 @@
+[gd_scene load_steps=8 format=3 uid="uid://b31540irw8kth"]
+
+[ext_resource type="PackedScene" uid="uid://dnhdyi2oma4m4" path="res://scenes/game_entity.tscn" id="1_6xmu2"]
+[ext_resource type="Script" path="res://scenes/enemies/Enemy.cs" id="2_l5xn5"]
+
+[sub_resource type="Gradient" id="Gradient_u7nq1"]
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_oejdf"]
+gradient = SubResource("Gradient_u7nq1")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_y8oau"]
+particle_flag_disable_z = true
+spread = 180.0
+initial_velocity_min = 10.0
+initial_velocity_max = 20.0
+gravity = Vector3(0, 0, 0)
+scale_max = 2.0
+color = Color(0, 0, 0, 1)
+color_ramp = SubResource("GradientTexture1D_oejdf")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mvaxm"]
+bg_color = Color(0.0156863, 0.0980392, 0.0666667, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xvu4h"]
+bg_color = Color(0.301961, 0.733333, 0.490196, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+anti_aliasing = false
+
+[node name="Enemy" instance=ExtResource("1_6xmu2")]
+script = ExtResource("2_l5xn5")
+
+[node name="BloodParticles" type="GPUParticles2D" parent="." index="0"]
+position = Vector2(0, -7)
+emitting = false
+amount = 12
+process_material = SubResource("ParticleProcessMaterial_y8oau")
+lifetime = 0.6
+one_shot = true
+explosiveness = 1.0
+
+[node name="Explosion" type="GPUParticles2D" parent="." index="1"]
+position = Vector2(0, -7)
+emitting = false
+amount = 100
+process_material = SubResource("ParticleProcessMaterial_y8oau")
+one_shot = true
+explosiveness = 1.0
+
+[node name="HealthBar" type="ProgressBar" parent="." index="2"]
+anchors_preset = -1
+anchor_left = 0.48
+anchor_right = 0.999
+offset_left = -30.0
+offset_top = -59.0
+offset_right = 28.0
+offset_bottom = -52.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/background = SubResource("StyleBoxFlat_mvaxm")
+theme_override_styles/fill = SubResource("StyleBoxFlat_xvu4h")
+value = 75.0
+rounded = true
+show_percentage = false
+
+[node name="Area2D" type="Area2D" parent="." index="3"]
+collision_layer = 0
+collision_mask = 0
+
+[connection signal="mouse_entered" from="Area2D" to="." method="OnMouseEntered"]
+[connection signal="mouse_exited" from="Area2D" to="." method="OnMouseExited"]

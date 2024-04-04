@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dnhdyi2oma4m4"]
+
+[ext_resource type="Script" path="res://GameEntity.cs" id="1_np62h"]
+
+[node name="GameEntity" type="CharacterBody2D" groups=["persist"]]
+script = ExtResource("1_np62h")

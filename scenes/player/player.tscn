@@ -1,8 +1,10 @@
-[gd_scene load_steps=17 format=3 uid="uid://dvj46r0h2rxrd"]
+[gd_scene load_steps=29 format=3 uid="uid://dvj46r0h2rxrd"]
 
-[ext_resource type="Script" path="res://scenes/player/player.cs" id="1_7g8ol"]
+[ext_resource type="PackedScene" uid="uid://dnhdyi2oma4m4" path="res://scenes/game_entity.tscn" id="1_erqbl"]
 [ext_resource type="Texture2D" uid="uid://bhm5ehkmc6scv" path="res://graphics/Spirit Boxer/Idle.png" id="1_ytue6"]
+[ext_resource type="Script" path="res://scenes/player/player.cs" id="2_aebvl"]
 [ext_resource type="Texture2D" uid="uid://d2xusr4f2ru6i" path="res://graphics/Spirit Boxer/Run.png" id="3_gs1ue"]
+[ext_resource type="Texture2D" uid="uid://bewl27dfagxvo" path="res://graphics/Spirit Boxer/attack 3.png" id="4_ksuun"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_d78pv"]
 atlas = ExtResource("1_ytue6")
@@ -44,7 +46,7 @@ region = Rect2(0, 176, 34, 44)
 atlas = ExtResource("3_gs1ue")
 region = Rect2(0, 220, 34, 44)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_bywu6"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_88ejh"]
 animations = [{
 "frames": [{
 "duration": 1.0,
@@ -87,33 +89,211 @@ animations = [{
 "speed": 8.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_t7385"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5a0fg"]
 size = Vector2(10, 19)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_txcw6"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_ey3tl"]
+radius = 68.0459
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ggnrf"]
 size = Vector2(10, 19)
 
-[node name="Player" type="CharacterBody2D"]
+[sub_resource type="Animation" id="Animation_uf53f"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_rxrsb"]
+resource_name = "attack"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimatedSprite2D:animation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(1.3),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"idle"]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(1.3),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"Attack"
+}]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Sprite2D:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.1, 1.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("AnimatedSprite2D:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.1, 1.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [true, false, true]
+}
+
+[sub_resource type="Animation" id="Animation_fyiwn"]
+resource_name = "hit"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(0.7, 0.7), Vector2(1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5eg5w"]
+_data = {
+"RESET": SubResource("Animation_uf53f"),
+"attack": SubResource("Animation_rxrsb"),
+"hit": SubResource("Animation_fyiwn")
+}
+
+[sub_resource type="Gradient" id="Gradient_yajfq"]
+colors = PackedColorArray(0.658824, 0.192157, 0.180392, 1, 0.760784, 0.239216, 0.219608, 0.780392)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_hribq"]
+gradient = SubResource("Gradient_yajfq")
+
+[sub_resource type="Curve" id="Curve_3eiis"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_e76wq"]
+curve = SubResource("Curve_3eiis")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_rnyxl"]
+particle_flag_disable_z = true
+spread = 180.0
+initial_velocity_min = 20.0
+initial_velocity_max = 30.0
+gravity = Vector3(0, 0, 0)
+scale_max = 2.0
+scale_curve = SubResource("CurveTexture_e76wq")
+color_ramp = SubResource("GradientTexture1D_hribq")
+
+[node name="Player" instance=ExtResource("1_erqbl")]
+collision_layer = 0
 collision_mask = 16
-script = ExtResource("1_7g8ol")
-JumpHeight = 400.0
-JumpTimeToPeak = 1.0
-JumpTimeToDescent = 1.0
+script = ExtResource("2_aebvl")
+JumpHeight = 40.0
+JumpTimeToPeak = 0.4
+JumpTimeToDescent = 0.3
+moveNames = PackedStringArray("Punch", "Strong Punch", "Heal")
+moveTypes = PackedStringArray("attack", "attack", "heal")
+movePowers = PackedFloat64Array(15, 100, 10)
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." index="0"]
 position = Vector2(1, -15)
-sprite_frames = SubResource("SpriteFrames_bywu6")
-animation = &"walk"
-frame_progress = 0.478052
+sprite_frames = SubResource("SpriteFrames_88ejh")
+animation = &"idle"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="1"]
 position = Vector2(1, -9.5)
-shape = SubResource("RectangleShape2D_t7385")
+shape = SubResource("RectangleShape2D_5a0fg")
 
-[node name="Hitbox" type="Area2D" parent="."]
+[node name="OverlapRange" type="Area2D" parent="." index="2"]
+collision_layer = 0
+collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OverlapRange" index="0"]
 position = Vector2(1, -9.5)
-shape = SubResource("RectangleShape2D_txcw6")
+shape = SubResource("CircleShape2D_ey3tl")
+debug_color = Color(0.866667, 0.290196, 0.262745, 0.152941)
 
-[connection signal="area_entered" from="Hitbox" to="." method="OnHitboxAreaEntered"]
+[node name="Hitbox" type="Area2D" parent="." index="3"]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" index="0"]
+position = Vector2(1, -9.5)
+shape = SubResource("RectangleShape2D_ggnrf")
+debug_color = Color(0.411765, 0.494118, 0.929412, 0.247059)
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="4"]
+visible = false
+position = Vector2(52, -16)
+texture = ExtResource("4_ksuun")
+vframes = 10
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="5"]
+libraries = {
+"": SubResource("AnimationLibrary_5eg5w")
+}
+
+[node name="BloodParticles" type="GPUParticles2D" parent="." index="6"]
+position = Vector2(0, -7)
+emitting = false
+amount = 12
+process_material = SubResource("ParticleProcessMaterial_rnyxl")
+lifetime = 0.6
+one_shot = true
+explosiveness = 1.0
+
+[node name="Camera2D" type="Camera2D" parent="." index="7"]
+
+[connection signal="body_entered" from="Hitbox" to="." method="OnHitboxBodyEntered"]
